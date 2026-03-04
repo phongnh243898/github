@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo SyncTargetControls</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #222; }
+        #container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            width: 100vw;
+            height: 100vh;
+            gap: 2px;
+        }
+        .viewport { background: #000; position: relative; border: 1px solid #444; }
+        .label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #0cf;
+            font-family: sans-serif;
+            pointer-events: none;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+        #controls-ui {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        .btn-upload {
+            background: #0cf;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div class="viewport" id="v1"><div class="label">3D PERSPECTIVE</div></div>
+    <div class="viewport" id="v2"><div class="label">TOP (X-Z)</div></div>
+    <div class="viewport" id="v3"><div class="label">FRONT (X-Y)</div></div>
+    <div class="viewport" id="v4"><div class="label">SIDE (Z-Y)</div></div>
+</div>
+
+<div id="controls-ui">
+    <input type="file" id="pcd_input" accept=".pcd" style="display: none;">
+    <button class="btn-upload" onclick="document.getElementById('pcd_input').click()">UPLOAD PCD</button>
+</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import { renderCamera, updateResize, cameras, controls } from './initCameras.js';
+    import SyncTargetControls from './SyncTargetControls.js';
+    import './pcdManager.js';
+    
+    const sync = new SyncTargetControls({ cameras, controls });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderCamera();
+    }
+
+    window.addEventListener('resize', () => {
+        updateResize();
+    });
+
+    animate();
+</script>
+</body>
+</html>
